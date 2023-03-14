@@ -1,0 +1,52 @@
+{
+  "status": "success",
+  "data": {
+    "time": 0.16650775600010093,
+    "image": {
+      "width": 2100,
+      "height": 1680
+    },
+    "predictions": [
+      {
+        "x": 191,
+        "y": 1477,
+        "width": 382,
+        "height": 406,
+        "confidence": 0.6994319558143616,
+        "class": "plant"
+      },
+      {
+        "x": 172,
+        "y": 984.5,
+        "width": 344,
+        "height": 441,
+        "confidence": 0.6084620356559753,
+        "class": "plant"
+      },
+      {
+        "x": 169,
+        "y": 570.5,
+        "width": 338,
+        "height": 483,
+        "confidence": 0.46892812848091125,
+        "class": "plant"
+      },
+      {
+        "x": 818.5,
+        "y": 1436.5,
+        "width": 683,
+        "height": 487,
+        "confidence": 0.452961266040802,
+        "class": "plant"
+      },
+      {
+        "x": 1438,
+        "y": 1446.5,
+        "width": 622,
+        "height": 467,
+        "confidence": 0.4195341467857361,
+        "class": "plant"
+      }
+    ]
+  }
+}
