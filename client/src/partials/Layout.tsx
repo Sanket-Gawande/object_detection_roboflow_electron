@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <main className='w-full'>
-      <header className='bg-dark flex justify-between px-8 py-4 md:py-6 text-lg md:text-xl w-full shadow-lg fixed'>
+      <header className='bg-dark/60 z-[5] flex justify-between px-8 py-4 md:py-6 text-lg md:text-xl w-full shadow-lg'>
         <NavLink
         to={'/'}
         className='text-slate-200 font-semibold'

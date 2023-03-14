@@ -15,7 +15,7 @@ dotenv.config();
 
 const port = process.env.PORT || 3000;
 
-const api = `https://detect.roboflow.com/plant-identification-mxsho/1?api_key=${process.env.API_KEY}`;
+const api = `https://detect.roboflow.com/${process.env.MODEL_AND_VERSION}?api_key=${process.env.API_KEY}`;
 app.post("/api/v1/count", async (req, res) => {
   const request = await fetch(api, {
     method: "POST",

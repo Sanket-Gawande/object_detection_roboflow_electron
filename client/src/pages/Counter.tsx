@@ -15,6 +15,7 @@ const Counter = () => {
   const [imageString, setImageString] = React.useState<string | null>(null);
   const [result, setResult] = React.useState<null | string>(null);
   const [imageElement, setImageElement] = React.useState<HTMLImageElement | null>(null);
+  const [error, setError] = React.useState<null | string>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   function getBase64FromFile(image: File | string) {
@@ -45,7 +46,7 @@ const Counter = () => {
   }
 
   async function handleCountPlants() {
-
+    // setResult('loading')
     if (!image || !imageString) return;
     setLoading(true);
     const api = `http://localhost:3000/api/v1/count`
@@ -60,6 +61,19 @@ const Counter = () => {
     });
     const res = await req.json();
     if (res.status === 'success') {
+      // error handling
+      console.log(res.data.predictions);
+      if (res.data.predictions.length === 0) {
+        setError('no plants found')
+        setLoading(false);
+        return;
+      }
+      if (!res.data.predictions) {
+        setError('Something went wrong')
+        setLoading(false);
+        return;
+      }
+
       const { data } = res;
       if (canvasRef.current && imageElement) {
         const canvas = canvasRef.current;
@@ -115,8 +129,38 @@ const Counter = () => {
     <Layout>
 
       <section
-        className='pt-20 p-12 w-full h-full overflow-y-auto grid place-items-center relative'
+        className='pt-20 z-0 p-12 w-full h-[calc(100%-5rem)] overflow-y-auto grid place-items-center relative'
       >
+        <img 
+        src={imageString || ''} 
+        alt="" 
+        
+        className='-z-10 select-none blur-lg absolute top-0 left-0 w-full h-full object-cover opacity-50'
+        />
+        {
+          error
+            ?
+            <div
+              className='absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 backdrop-blur-md backdrop-filter flex items-center justify-center'
+            >
+              <div className='p-8 relative w-[600px] text-2xl text-red-500  bg-dark2 rounded-xl'>
+                <button
+                  title='close'
+                  onClick={() => setError(null)}
+                  className='bg-red-500 z-10 absolute w-max shrink-0 text-slate-200 px-4 py-2 rounded-lg -top-2 -right-2'
+                >
+                  &times;
+                </button>
+                <h1
+                  className='bg-red-500/10 p-4 rounded-xl'
+                >
+                  {error}
+                </h1>
+              </div>
+            </div>
+
+            : null
+        }
         {
 
           <div
@@ -126,28 +170,37 @@ const Counter = () => {
             }}
             className='transition-all duration-300 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 backdrop-blur-md backdrop-filter flex items-center justify-center'
           >
+            <input
+              className='absolute top-8 left-12 cursor-pointer w-56 accent-green-500 '
+              type="range"
+              min="20"
+              defaultValue={100}
+              max="100"
+              onChange={(e) => {
+                canvasRef.current!.style.scale = `${((e.target.value as unknown as number) / 100)}`;
+              }}
+            />
+            <button
+              onClick={() => setResult(null)}
+              className='bg-red-500 z-10 absolute w-max shrink-0 text-slate-200 px-4 py-2 rounded-lg top-8 right-8'
+            >
+              &times;
+            </button>
+
             <div
               className='bg-dark h-[90%] border-8 border-dark overflow-auto rounded-lg w-[95%] shadow-xl'
             >
-              <button
-                onClick={() => setResult(null)}
-                className='bg-red-500 absolute w-max shrink-0 text-slate-200 px-4 py-2 rounded-lg top-8 right-8'
-              >
-                &times;
-              </button>
               <canvas
                 ref={canvasRef}
               >
-
               </canvas>
-
             </div>
           </div>
 
         }
 
         <main
-          className='w-10/12  max-w-[600px] bg-dark rounded-lg shadow-xl p-8'
+          className='w-10/12  max-w-[600px] bg-dark2/60 rounded-lg shadow-2xl p-8'
         >
           <input
             type="file"
@@ -159,10 +212,10 @@ const Counter = () => {
           {
             imageString ? (
               <div
-                className='flex items-center justify-between py-4'
+                className='flex w-full items-center justify-between py-4'
               >
                 <h5
-                  className='text-yellow-500 text-lg '
+                  className='text-yellow-500 text-lg break-words w-[21rem]'
                 >
                   Image chosen : {image?.name} (image size: {formatImagesize(image?.size as number)})
                 </h5>
@@ -170,7 +223,7 @@ const Counter = () => {
                 <button
                   disabled={loading}
                   onClick={handleCountPlants}
-                  className='bg-green-500 w-max shrink-0 text-slate-200 px-4 py-2 rounded-lg'
+                  className='bg-green-700 w-max shrink-0 text-slate-100 px-4 py-2 rounded-lg'
                 >
                   {
                     loading ? 'Loading...' : 'Count plants'
