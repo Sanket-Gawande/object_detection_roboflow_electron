@@ -1,5 +1,7 @@
 import Layout from '@/partials/Layout'
+import { FileUploader } from 'react-drag-drop-files'
 import React, { useEffect } from 'react'
+import PritTemplate from '@/partials/PrintTemplate'
 type Prediction = {
   x: number;
   y: number;
@@ -10,12 +12,15 @@ type Prediction = {
 }
 
 const Counter = () => {
+
   const [loading, setLoading] = React.useState(false);
   const [image, setImage] = React.useState<File | null>(null);
   const [imageString, setImageString] = React.useState<string | null>(null);
   const [result, setResult] = React.useState<null | string>(null);
+  const [count, setCount] = React.useState(0)
   const [imageElement, setImageElement] = React.useState<HTMLImageElement | null>(null);
   const [error, setError] = React.useState<null | string>(null);
+  const [viewReport, setViewReport] = React.useState(false);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   function getBase64FromFile(image: File | string) {
@@ -35,6 +40,7 @@ const Counter = () => {
     reader.readAsDataURL(file);
     setImage(file);
   }
+
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       getBase64FromFile(e.target.files[0]);
@@ -75,6 +81,9 @@ const Counter = () => {
       }
 
       const { data } = res;
+
+      setCount(data.predictions);
+
       if (canvasRef.current && imageElement) {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
@@ -84,10 +93,10 @@ const Counter = () => {
             const prediction = predictions[i] as Prediction;
             ctx.strokeStyle = 'red';
             ctx.lineWidth = 4;
-            ctx.strokeRect(prediction.x, prediction.y, prediction.width, prediction.height);
+            ctx.strokeRect(prediction.x - 30, prediction.y - 30, prediction.width, prediction.height);
             ctx.fillStyle = 'blue';
             ctx.font = '24px Arial';
-            ctx.fillText(`${prediction.class} (${i + 1})`, prediction.x, prediction.y - 10);
+            ctx.fillText(`${prediction.class} (${i + 1})`, prediction.x - 25, prediction.y - 35);
           }
           ctx.fillStyle = 'blue';
           ctx.fillText(`Total plants: ${predictions.length}`, 10, 50);
@@ -110,7 +119,7 @@ const Counter = () => {
 
   //  draw image on canvas once image is loaded
   useEffect(() => {
-    getData()
+    getData();
   }, [imageElement?.id])
 
   function getData() {
@@ -127,15 +136,26 @@ const Counter = () => {
 
   return (
     <Layout>
-
       <section
         className='pt-20 z-0 p-12 w-full h-[calc(100%-5rem)] overflow-y-auto grid place-items-center relative'
       >
-        <img 
-        src={imageString || ''} 
-        alt="" 
-        
-        className='-z-10 select-none blur-lg absolute top-0 left-0 w-full h-full object-cover opacity-50'
+        {
+          viewReport
+          // print preview component
+            ? <PritTemplate
+              setViewReport={setViewReport}
+              setResult={setResult}
+              image={canvasRef.current?.toDataURL('png', 1) || '/placeholder.png'}
+              count={count.length || 0}
+              name='Mr. Gopal Jawle'
+            />
+            : null
+        }
+
+        <img
+          src={imageString || ''}
+          alt=""
+          className='-z-10 select-none blur-2xl absolute top-0 left-0 w-full h-full object-cover opacity-[.3]'
         />
         {
           error
@@ -168,10 +188,10 @@ const Counter = () => {
               visibility: result ? 'visible' : 'hidden',
               opacity: result ? 1 : 0
             }}
-            className='transition-all duration-300 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 backdrop-blur-md backdrop-filter flex items-center justify-center'
+            className='transition-all z-50 duration-300 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 backdrop-blur-md backdrop-filter flex items-center justify-center'
           >
             <input
-              className='absolute top-8 left-12 cursor-pointer w-56 accent-green-500 '
+              className='absolute bottom-8 right-12 cursor-pointer w-56 accent-red-500 '
               type="range"
               min="20"
               defaultValue={100}
@@ -182,13 +202,18 @@ const Counter = () => {
             />
             <button
               onClick={() => setResult(null)}
-              className='bg-red-500 z-10 absolute w-max shrink-0 text-slate-200 px-4 py-2 rounded-lg top-8 right-8'
+              className='bg-red-500 z-10 absolute w-max shrink-0 text-slate-200 px-4 py-2 rounded-full top-8 right-8'
             >
               &times;
             </button>
-
+            <button
+              onClick={() => setViewReport(!viewReport)}
+              className='bg-sky-500 absolute w-max shrink-0 text-white px-4 py-2 rounded-full top-8 right-24'
+            >
+              View Report
+            </button>
             <div
-              className='bg-dark h-[90%] border-8 border-dark overflow-auto rounded-lg w-[95%] shadow-xl'
+              className='bg-slate-800  h-[90%] border-8 border-dark overflow-auto rounded-lg w-[95%] Jay Wankhadeshadow-xl'
             >
               <canvas
                 ref={canvasRef}
@@ -200,7 +225,7 @@ const Counter = () => {
         }
 
         <main
-          className='w-10/12  max-w-[600px] bg-dark2/60 rounded-lg shadow-2xl p-8'
+          className='w-10/12  max-w-[600px] bg-gray-900 border border-slate-700 rounded-lg shadow-2xl p-8'
         >
           <input
             type="file"
@@ -214,38 +239,85 @@ const Counter = () => {
               <div
                 className='flex w-full items-center justify-between py-4'
               >
-                <h5
-                  className='text-yellow-500 text-lg break-words w-[21rem]'
-                >
-                  Image chosen : {image?.name} (image size: {formatImagesize(image?.size as number)})
-                </h5>
+                <span>
 
-                <button
-                  disabled={loading}
-                  onClick={handleCountPlants}
-                  className='bg-green-700 w-max shrink-0 text-slate-100 px-4 py-2 rounded-lg'
-                >
-                  {
-                    loading ? 'Loading...' : 'Count plants'
-                  }
-                </button>
+                  <h5
+                    className='text-sky-600 text-lg font-semibold break-words w-[21rem]'
+                  >
+                    Name : {image?.name}
+                  </h5>
+                  <p
+                    className='text-slate-300'
+                  >
+                    Size: {formatImagesize(image?.size as number)}
+                  </p>
+                </span>
+
               </div>
             )
               : null
           }
-          <label htmlFor="image"
-            className='flex flex-col justify-center cursor-pointer'
+
+
+
+          <label
+            className='flex flex-col border rounded-lg border-dashed p-4 justify-center cursor-pointer'
           >
-            <img
-              className='w-full h-64 object-cover rounded-lg shadow-xl opacity0 border p-4 border-dashed'
-              src={imageString || '/placeholder.jpg'}
-              alt="Choose image"
-            />
-            <h3
-              className='text-2xl font-semibold text-slate-400 py-6'
-            >
-              Choose image to count from
-            </h3>
+
+            {
+              imageString ?
+                <>
+                  <img
+                    className='w-full h-64 object-cover rounded-lg shadow-xl  p-4'
+                    src={imageString || '/thumbnail-placeholder.svg'}
+                    alt="Choose image"
+
+                  />
+                  <div
+                    className='flex items-center'
+                  >
+                    <h1
+                      className='py-2  flex-1 px-4 rounded-l-lg text-white font-semibold'
+                    >
+                      Choose another
+                    </h1>
+                  </div>
+
+                  <button
+                    disabled={loading}
+                    onClick={handleCountPlants}
+                    className='bg-green-600 ml-auto w-max shrink-0 text-white px-4 py-2 rounded-full'
+                  >
+                    {
+                      loading ? 'Loading...' : 'Count plants'
+                    }
+                  </button>
+                </>
+                :
+                <FileUploader
+                  handleChange={getBase64FromFile}
+                  types={['jpg', 'jpeg', 'png', 'webp']}
+
+                >
+                  <div>
+                    <img
+                      className='mx-auto py-6'
+                      src="/drag-and-drop.png" alt="drop" />
+                    <h3
+                      className='text-2xl text-center font-semibold text-slate-300 pt-4'
+                    >
+                      Drop image or <span
+                        className='underline text-sky-600'>Browse files</span>
+                    </h3>
+                    <p
+                      className='text-center py-4 text-slate-400'
+                    >
+                      only .Jpg, .Jpeg, .png, .Jpeg
+                    </p>
+                  </div>
+                </FileUploader>
+            }
+
           </label>
         </main>
       </section>

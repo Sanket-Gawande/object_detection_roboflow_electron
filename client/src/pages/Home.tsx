@@ -4,7 +4,7 @@ import React from 'react'
 const Home = () => {
   return (
     <Layout>
-      <div className='grid place-items-center h-full'>
+      <div className='grid place-items-center'>
         <main>
           <h1
             className='text-4xl font-semibold text-slate-200'
