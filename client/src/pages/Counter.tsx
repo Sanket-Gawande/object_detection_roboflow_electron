@@ -1,6 +1,6 @@
 import Layout from '@/partials/Layout'
 import { FileUploader } from 'react-drag-drop-files'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import PritTemplate from '@/partials/PrintTemplate'
 type Prediction = {
   x: number;
@@ -17,11 +17,15 @@ const Counter = () => {
   const [image, setImage] = React.useState<File | null>(null);
   const [imageString, setImageString] = React.useState<string | null>(null);
   const [result, setResult] = React.useState<null | string>(null);
-  const [count, setCount] = React.useState(0)
+  const [count, setCount] = React.useState([])
   const [imageElement, setImageElement] = React.useState<HTMLImageElement | null>(null);
   const [error, setError] = React.useState<null | string>(null);
   const [viewReport, setViewReport] = React.useState(false);
+  const [season, setseason] = React.useState('summer');
+  const [plantType, setplantType] = React.useState('summer');
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
+
+
 
   function getBase64FromFile(image: File | string) {
     const file = image as File;
@@ -53,6 +57,9 @@ const Counter = () => {
 
   async function handleCountPlants() {
     // setResult('loading')
+    // const type = prompt('Please enter plant type') || '';
+    // setplantType(type);
+    if (!plantType) { return alert('Plant type required.') }
     if (!image || !imageString) return;
     setLoading(true);
     const api = `http://localhost:3000/api/v1/count`
@@ -141,8 +148,9 @@ const Counter = () => {
       >
         {
           viewReport
-          // print preview component
+            // print preview component
             ? <PritTemplate
+              ptype={plantType}
               setViewReport={setViewReport}
               setResult={setResult}
               image={canvasRef.current?.toDataURL('png', 1) || '/placeholder.png'}
@@ -260,8 +268,8 @@ const Counter = () => {
 
 
 
-          <label
-            className='flex flex-col border rounded-lg border-dashed p-4 justify-center cursor-pointer'
+          <div
+            className='flex flex-col border rounded-lg border-dashed p-4 justify-center'
           >
 
             {
@@ -279,19 +287,25 @@ const Counter = () => {
                     <h1
                       className='py-2  flex-1 px-4 rounded-l-lg text-white font-semibold'
                     >
-                      Choose another
                     </h1>
+                    <p
+                      className='text-white text-lg pr-2 w-52'
+                    >
+                      Crop type :
+                    </p>
+                    <input type="text" placeholder='eg. cotton' className='bg-transparent py-2 rounded-full mr-4 outline-none ring-0 border text-white font-medium px-4 ' value={plantType} onChange={e => setplantType(e.target.value)} />
+                    <button
+                      onClick={handleCountPlants}
+                      disabled={loading}
+                      className='bg-green-600 ml-auto w-max shrink-0 text-white px-4 py-2 rounded-full'
+                    >
+                      {
+                        loading ? 'Loading...' : 'Count plants'
+                      }
+                    </button>
                   </div>
 
-                  <button
-                    disabled={loading}
-                    onClick={handleCountPlants}
-                    className='bg-green-600 ml-auto w-max shrink-0 text-white px-4 py-2 rounded-full'
-                  >
-                    {
-                      loading ? 'Loading...' : 'Count plants'
-                    }
-                  </button>
+
                 </>
                 :
                 <FileUploader
@@ -318,7 +332,7 @@ const Counter = () => {
                 </FileUploader>
             }
 
-          </label>
+          </div>
         </main>
       </section>
     </Layout>

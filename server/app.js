@@ -26,6 +26,7 @@ app.post("/api/v1/count", async (req, res) => {
     },
   });
   const data = await request.json();
+
   res.status(201).json({
     status: "success",
     data,

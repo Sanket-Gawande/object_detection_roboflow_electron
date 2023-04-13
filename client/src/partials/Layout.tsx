@@ -5,7 +5,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <main className='w-full '>
       <section
-      className='fixed bg-sky-700 text-xl  sm:text-4xl font-semibold text-white md:hidden z-50 inset-0 grid place-items-center h-screen w-full '
+        className='fixed bg-sky-700 text-xl  sm:text-4xl font-semibold text-white md:hidden z-50 inset-0 grid place-items-center h-screen w-full '
       >
         Please resize screen to 600x600 atlest
       </section>
@@ -30,13 +30,27 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
           >
             About
           </NavLink>
+
+          <NavLink
+            className='hover:text-sky-200'
+            to={'/profile'}
+          >
+            Profile
+          </NavLink>
+          <NavLink
+            className='hover:text-sky-200'
+            to={'/register'}
+          >
+            Register
+          </NavLink>
+
           <NavLink
             className='hover:text-sky-200'
             to={'/counter'}
           >
             Count plants
           </NavLink>
-         
+
         </nav>
 
       </header>
