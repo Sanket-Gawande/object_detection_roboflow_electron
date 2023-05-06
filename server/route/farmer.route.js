@@ -5,7 +5,7 @@ const FarmerRouter = Router();
 
 FarmerRouter.post("/register", async (req, res) => {
   const { payload } = req.body;
-  console.log(payload);
+
   if (!payload) {
     return res.status(400).send({
       success: true,
@@ -13,7 +13,7 @@ FarmerRouter.post("/register", async (req, res) => {
     });
   }
   const akg = await farmerModel.create(payload);
-  console.log(akg);
+
   return res.status(200).send({
     success: true,
     message: "Account created successfully. You can login now.",
@@ -25,7 +25,7 @@ FarmerRouter.post("/login", async (req, res) => {
   const { email, password } = payload;
 
   const akg = await farmerModel.findOne({ email, password });
-  console.log(akg, payload);
+
   if (!akg) {
     return res.status(400).send({
       success: false,
