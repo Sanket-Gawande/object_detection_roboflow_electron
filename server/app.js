@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import FarmerRouter from "./route/farmer.route.js";
+import ReportRouter from "./route/report.route.js";
 import mongoose from "mongoose";
 
 const app = express();
@@ -13,6 +14,8 @@ app.use(
 );
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", FarmerRouter);
+app.use("/api/report", ReportRouter);
+
 dotenv.config();
 
 const port = process.env.PORT || 3000;

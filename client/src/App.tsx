@@ -47,7 +47,7 @@ const App = () => {
     <FarmerContext>
 
       <div
-        className='h-screen w-screen flex flex-row'
+        className='min-h-screen w-screen flex flex-row'
       >
         <RouterProvider
           router={router}

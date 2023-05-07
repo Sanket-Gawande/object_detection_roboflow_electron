@@ -79,36 +79,46 @@ export const Login = () => {
             Login here.
           </h4>
 
-
-          <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
+          <main
+            className='space-y-8'
           >
-            <label htmlFor="email">
-              Enter email
-            </label>
-            <input
-              defaultValue={farmer?.email}
-              className='rounded-md py-2 px-4 bg-transparent border'
-              type="text" placeholder='name@domain.com' name='email' />
-          </div>
+
+            <div
+              className='flex flex-col text-slate-200 text-xl'
+            >
+              <label htmlFor="email">
+                Enter email
+              </label>
+              <input
+                required
+                defaultValue={farmer?.email}
+                className='rounded-md py-2 px-4 bg-transparent border'
+                type="text" placeholder='name@domain.com' name='email' />
+            </div>
 
 
-          <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
-          >
-            <label htmlFor="email">
-              Password
-            </label>
-            <input
-              defaultValue={farmer?.area}
-              className='rounded-md py-2 px-4 bg-transparent border'
-              type="password" placeholder='*******' name='password' />
-          </div>
+            <div
+              className='flex flex-col text-slate-200 text-xl'
+            >
+              <label htmlFor="email">
+                Password
+              </label>
+              <input
+                required
+                defaultValue={farmer?.area}
+                className='rounded-md py-2 px-4 bg-transparent border'
+                type="password" placeholder='*******' name='password' />
+            </div>
 
+          </main>
           <button
             className='rounded-full px-6 py-3 bg-sky-600 text-white text-xl hover:scale-[.99] transform transition-all hover:bg-sky-700'
           >
-            Login
+            {
+              loading
+                ? 'Please wait...'
+                : 'Login'
+            }
           </button>
           <p
             className='text-slate-300 text-lg text-right pt-4'

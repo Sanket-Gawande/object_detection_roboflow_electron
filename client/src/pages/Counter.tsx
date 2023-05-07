@@ -2,6 +2,8 @@ import Layout from '@/partials/Layout'
 import { FileUploader } from 'react-drag-drop-files'
 import React, { useContext, useEffect } from 'react'
 import PritTemplate from '@/partials/PrintTemplate'
+import save_report from '../../service/create_report.service'
+import { farmerContext } from '@/Context/FarmerContext'
 type Prediction = {
   x: number;
   y: number;
@@ -12,7 +14,7 @@ type Prediction = {
 }
 
 const Counter = () => {
-
+  const { farmer } = useContext(farmerContext);
   const [loading, setLoading] = React.useState(false);
   const [image, setImage] = React.useState<File | null>(null);
   const [imageString, setImageString] = React.useState<string | null>(null);
@@ -144,7 +146,7 @@ const Counter = () => {
   return (
     <Layout>
       <section
-        className='pt-20 z-0 p-12 w-full h-[calc(100%-5rem)] overflow-y-auto grid place-items-center relative'
+        className='pt-20 z-0 p-12 w-full min-h-screen overflow-y-auto grid place-items-center relative'
       >
         {
           viewReport
@@ -196,10 +198,10 @@ const Counter = () => {
               visibility: result ? 'visible' : 'hidden',
               opacity: result ? 1 : 0
             }}
-            className='transition-all z-50 duration-300 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 backdrop-blur-md backdrop-filter flex items-center justify-center'
+            className='transition-all z-50 duration-300 absolute top-0 pt-16 left-0 w-full h-full bg-black bg-opacity-60 backdrop-blur-md backdrop-filter flex items-center justify-center'
           >
             <input
-              className='absolute bottom-8 right-12 cursor-pointer w-56 accent-red-500 '
+              className='absolute bottom-16 right-16 cursor-pointer w-56 accent-slate-600 '
               type="range"
               min="20"
               defaultValue={100}
@@ -210,15 +212,20 @@ const Counter = () => {
             />
             <button
               onClick={() => setResult(null)}
-              className='bg-red-500 z-10 absolute w-max shrink-0 text-slate-200 px-4 py-2 rounded-full top-8 right-8'
+              className='bg-red-500 z-10 absolute w-max shrink-0 text-slate-200 px-4 py-2 rounded-full top-20 right-16'
             >
               &times;
             </button>
             <button
-              onClick={() => setViewReport(!viewReport)}
-              className='bg-sky-500 absolute w-max shrink-0 text-white px-4 py-2 rounded-full top-8 right-24'
+              onClick={async () => {
+                await save_report({
+                 ...farmer
+                }, count.length, plantType)
+                setViewReport(!viewReport)
+              }}
+              className='bg-sky-500 absolute w-max shrink-0 text-white px-4 py-2 rounded-full top-20 right-28'
             >
-              View Report
+              View & Save Report
             </button>
             <div
               className='bg-slate-800  h-[90%] border-8 border-dark overflow-auto rounded-lg w-[95%] Jay Wankhadeshadow-xl'
@@ -291,7 +298,7 @@ const Counter = () => {
                     <p
                       className='text-white text-lg pr-2 w-52'
                     >
-                      Crop type :
+                      Add label :
                     </p>
                     <input type="text" placeholder='eg. cotton' className='bg-transparent py-2 rounded-full mr-4 outline-none ring-0 border text-white font-medium px-4 ' value={plantType} onChange={e => setplantType(e.target.value)} />
                     <button
