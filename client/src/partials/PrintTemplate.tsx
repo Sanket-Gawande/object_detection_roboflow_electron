@@ -15,7 +15,7 @@ const PritTemplate = ({
   image: string,
   ptype: string
   setViewReport: React.Dispatch<React.SetStateAction<boolean>>,
-  setResult: React.Dispatch<React.SetStateAction<boolean>>
+  setResult: React.Dispatch<React.SetStateAction<boolean | null | string>>
 }) => {
   const { farmer } = useContext(farmerContext)
   function printHandler() {
@@ -66,22 +66,22 @@ const PritTemplate = ({
           <h4
             className='text-slate-200 font-semibold text-lg py-1'
           >
-            Name : {farmer.name}
+            Name : {farmer?.name}
           </h4>
           <h4
             className='text-slate-200 font-semibold text-lg py-1'
           >
-            Email : {farmer.email}
+            Email : {farmer?.email}
           </h4>
           <h4
             className='text-slate-200 font-semibold text-lg py-1'
           >
-            Survey Number : {farmer.survey_no}
+            Survey Number : {farmer?.survey_no}
           </h4>
           <h4
             className='text-slate-200 font-semibold text-lg py-1'
           >
-            Area (in Hector) : {farmer.area}
+            Area (in Hector) : {farmer?.area}
           </h4>
           <h4
             className='text-slate-200 font-semibold text-lg py-1'

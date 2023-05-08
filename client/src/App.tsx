@@ -9,12 +9,15 @@ import Print from './pages/Print'
 import { Profile } from './pages/Profile'
 import { Register } from './pages/Register'
 
+import "react-toastify/dist/ReactToastify.css";
+
 const App = () => {
   const router = createHashRouter(
     [
       {
         path: '/',
-        element: <Home />
+        element: <Login />
+
       },
       {
         path: '/about',
@@ -31,11 +34,11 @@ const App = () => {
       {
         path: '/register',
         element: <Register />
-      
+
       },
       {
-        path: '/login',
-        element: <Login />
+        path: '/home',
+        element: <Home />
       }
 
     ]
@@ -44,7 +47,7 @@ const App = () => {
     <FarmerContext>
 
       <div
-        className='h-screen w-screen flex flex-row'
+        className='min-h-screen w-screen flex flex-row'
       >
         <RouterProvider
           router={router}

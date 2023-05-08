@@ -22,13 +22,13 @@ export const Profile = () => {
           <img src="/placeholder.jpg" className='absolute left-8 -bottom-16 shadow-xl rounded-full w-44 h-44 object-cover' alt="" />
         </div>
 
-        <section className='w-10/12 mx-auto mt-24 text-md'>
+        <section className='flex px-12  mx-auto mt-24 text-md'>
           <form
             onSubmit={handleForm}
-            className='space-y-6'
+            className='space-y-6 w-1/2'
           >
             <div
-              className='flex items-center space-x-6 text-slate-200 text-xl'
+              className='flex flex-col text-slate-200 text-xl'
             >
               <label htmlFor="name">
                 Full name
@@ -36,23 +36,23 @@ export const Profile = () => {
               <input
                 className='rounded-md py-2 px-4 bg-transparent border'
                 defaultValue={farmer?.name}
-                type="text" placeholder='Sanket Gawande' name='name' />
+                type="text" placeholder='John doe' name='name' />
             </div>
 
             <div
-              className='flex items-center space-x-6 text-slate-200 text-xl'
+              className='flex flex-col text-slate-200 text-xl'
             >
               <label htmlFor="phone">
-              Phone number
+                Phone number
               </label>
               <input
                 defaultValue={farmer?.phone}
                 className='rounded-md py-2 px-4 bg-transparent border'
-                type="text"  placeholder='+91 1212121212' name='phone' />
+                type="text" placeholder='+91 1212121212' name='phone' />
             </div>
 
             <div
-              className='flex items-center space-x-6 text-slate-200 text-xl'
+              className='flex flex-col text-slate-200 text-xl'
             >
               <label htmlFor="email">
                 Enter email
@@ -64,7 +64,7 @@ export const Profile = () => {
             </div>
 
             <div
-              className='flex items-center space-x-6 text-slate-200 text-xl'
+              className='flex flex-col text-slate-200 text-xl'
             >
               <label htmlFor="sur">
                 Survey number
@@ -76,7 +76,7 @@ export const Profile = () => {
             </div>
 
             <div
-              className='flex items-center space-x-6 text-slate-200 text-xl'
+              className='flex flex-col text-slate-200 text-xl'
             >
               <label htmlFor="email">
                 Farm Area (in Hector)
@@ -84,7 +84,7 @@ export const Profile = () => {
               <input
                 defaultValue={farmer?.area}
                 className='rounded-md py-2 px-4 bg-transparent border'
-                type="text"  placeholder='5.2' name='area' min={0} />
+                type="text" placeholder='5.2' name='area' min={0} />
             </div>
 
             <button
@@ -93,6 +93,52 @@ export const Profile = () => {
               Update
             </button>
           </form>
+          <section
+            className='w-2/3 px-12 lg:px-24 space-y-6 text-white'
+          >
+            <h3
+              className='text-xl font-semibold'
+            >
+              Past reports
+            </h3>
+            <main
+            className=''
+            >
+              {
+                [1, 2, 3, 4].map((_, index) =>
+                  <div
+                    key={index}
+                    className='mb-4 px-4 py-4 bg-gradient-to-bl hover:bg-gradient-to-br transition-all duration-300 shadow-lg from-white/20 via-slate-400/40 to-slate-800/40 border border-white rounded-md flex justify-between flex-col lg:flex-row lg:items-center'
+                  >
+                    <p
+                    className='font-semibold'
+                    >{`${index + 1}`.padStart(3, '0')}) Cotton-20-march-2023</p>
+                    <div
+                      className='flex space-x-4 lg:items-center flex-col lg:flex-row'
+                    >
+                      <p
+                      className='text-slate-300'
+                      >
+                        {new Date().toLocaleString('en-in' , {dateStyle : 'full'})}
+                      </p>
+                      <div
+                      className='space-x-2'
+                      >
+                        <button
+                          className='bg-red-500 text-white py-2 hover:underline text-xs px-4 rounded-full'
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className='bg-slate-800 text-white py-2 hover:underline  text-xs px-4 rounded-full'
+                        >Print</button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+            </main>
+          </section>
         </section>
       </main>
     </Layout>
