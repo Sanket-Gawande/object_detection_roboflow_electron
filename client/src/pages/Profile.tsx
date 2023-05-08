@@ -1,16 +1,33 @@
 import { farmerContext } from '@/Context/FarmerContext'
 import Layout from '@/partials/Layout';
 import extractFormData from '@/utils/extractFormData';
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { delete_my_reports, get_my_reports } from '../../service/create_report.service';
+import { toast } from 'react-toastify';
+import { AiFillInfoCircle, AiOutlineInfo } from 'react-icons/ai';
 
 export const Profile = () => {
   const { farmer, setFarmer } = useContext(farmerContext);
-
+  const [reports, setReport] = useState(null)
   async function handleForm(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
     const payload = extractFormData(e.target);
     setFarmer(payload)
   }
+  const load_reports = async () => {
+    const data = await get_my_reports(farmer._id);
+    setReport(data.data)
+    toast(data.message, { type: 'success' })
+  }
+  const delete_report = async (id: string) => {
+    const data = await delete_my_reports(id)
+    toast(data.message, { type: 'info' })
+    load_reports()
+  }
+
+  useEffect(() => {
+    load_reports()
+  }, [])
   return (
     <Layout>
       <main
@@ -102,29 +119,34 @@ export const Profile = () => {
               Past reports
             </h3>
             <main
-            className=''
+              className=''
             >
               {
-                [1, 2, 3, 4].map((_, index) =>
+                reports && reports.map((item: {
+                  label: string,
+                  _id: string,
+                  createdAt: string
+                }, index: number) =>
                   <div
                     key={index}
                     className='mb-4 px-4 py-4 bg-gradient-to-bl hover:bg-gradient-to-br transition-all duration-300 shadow-lg from-white/20 via-slate-400/40 to-slate-800/40 border border-white rounded-md flex justify-between flex-col lg:flex-row lg:items-center'
                   >
                     <p
-                    className='font-semibold'
-                    >{`${index + 1}`.padStart(3, '0')}) Cotton-20-march-2023</p>
+                      className='font-semibold'
+                    >{`${index + 1}`.padStart(3, '0')}) {item?.label}</p>
                     <div
                       className='flex space-x-4 lg:items-center flex-col lg:flex-row'
                     >
                       <p
-                      className='text-slate-300'
+                        className='text-slate-300'
                       >
-                        {new Date().toLocaleString('en-in' , {dateStyle : 'full'})}
+                        {new Date(item?.createdAt).toLocaleString('en-in', { dateStyle: 'full' })}
                       </p>
                       <div
-                      className='space-x-2'
+                        className='space-x-2'
                       >
                         <button
+                          onClick={() => delete_report(item._id)}
                           className='bg-red-500 text-white py-2 hover:underline text-xs px-4 rounded-full'
                         >
                           Delete
@@ -136,6 +158,16 @@ export const Profile = () => {
                     </div>
                   </div>
                 )
+              }
+              {
+                !reports?.length &&
+                <main
+                className='border px-4 py-4 text-xl bg-red-600/20 text-red-400 border-current font-semibold'
+                >
+                  <h2>
+                    No record found
+                  </h2>
+                </main>
               }
             </main>
           </section>

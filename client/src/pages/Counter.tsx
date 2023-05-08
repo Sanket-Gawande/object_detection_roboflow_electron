@@ -4,6 +4,7 @@ import React, { useContext, useEffect } from 'react'
 import PritTemplate from '@/partials/PrintTemplate'
 import save_report from '../../service/create_report.service'
 import { farmerContext } from '@/Context/FarmerContext'
+import { toast } from 'react-toastify'
 type Prediction = {
   x: number;
   y: number;
@@ -64,7 +65,7 @@ const Counter = () => {
     if (!plantType) { return alert('Plant type required.') }
     if (!image || !imageString) return;
     setLoading(true);
-    const api = `http://localhost:3000/api/v1/count`
+    const api = `${import.meta.env.VITE_BASE_URL}/api/v1/count`
     const req = await fetch(api, {
       method: 'POST',
       body: JSON.stringify({
@@ -217,10 +218,14 @@ const Counter = () => {
               &times;
             </button>
             <button
-              onClick={async () => {
-                await save_report({
-                 ...farmer
-                }, count.length, plantType)
+              onClick={async function () {
+
+                const name = new Date().toLocaleString('en-in', { dateStyle: 'medium' }).replace(/[ ,]/g, '-')
+                const res = await save_report({
+                  ...farmer
+                }, count.length, `${plantType}-${name}`)
+
+                toast(res.message, { type: 'success' });
                 setViewReport(!viewReport)
               }}
               className='bg-sky-500 absolute w-max shrink-0 text-white px-4 py-2 rounded-full top-20 right-28'
@@ -254,7 +259,9 @@ const Counter = () => {
               <div
                 className='flex w-full items-center justify-between py-4'
               >
-                <span>
+                <span
+
+                >
 
                   <h5
                     className='text-sky-600 text-lg font-semibold break-words w-[21rem]'
@@ -267,7 +274,12 @@ const Counter = () => {
                     Size: {formatImagesize(image?.size as number)}
                   </p>
                 </span>
-
+                <button
+                  onClick={() => setImageString(null)}
+                  className='bg-red-600 text-white rounded-full px-5 py-2 '
+                >
+                  Reset
+                </button>
               </div>
             )
               : null
@@ -342,7 +354,7 @@ const Counter = () => {
           </div>
         </main>
       </section>
-    </Layout>
+    </Layout >
   )
 }
 

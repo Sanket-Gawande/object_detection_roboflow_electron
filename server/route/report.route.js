@@ -20,7 +20,7 @@ ReportRouter.post("/", async (req, res) => {
   });
 });
 
-ReportRouter.get("/id", async (req, res) => {
+ReportRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
   const akg = await reportModal.find({
     user_id: id,
@@ -29,6 +29,18 @@ ReportRouter.get("/id", async (req, res) => {
     error: false,
     data: akg,
     message: "Reports fetched successfully.",
+  });
+});
+
+ReportRouter.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  const akg = await reportModal.deleteOne({
+    _id: id,
+  });
+  res.status(200).json({
+    error: false,
+    data: akg,
+    message: "Report deleted successfully.",
   });
 });
 export default ReportRouter;
