@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState } from 'react'
+import React, { createContext, ReactNode, useEffect, useState } from 'react'
 
 
 export const farmerContext = createContext<{ farmer?: any, setFarmer?: any, survey_no?: number, phone?: string }>({})
@@ -14,6 +14,13 @@ const FarmerContext = ({ children }: { children: ReactNode }) => {
     phone: '7030621543'
   }
    */
+  useEffect(() => {
+    console.log(farmer)
+    const user = JSON.parse(localStorage.getItem('user') || '')
+    if (user) {
+      setFarmer((user))
+    }
+  }, [])
   return (
     <farmerContext.Provider
       value={{ farmer, setFarmer }}

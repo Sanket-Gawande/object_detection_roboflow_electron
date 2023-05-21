@@ -2,7 +2,19 @@ import { Router } from "express";
 import farmerModel from "../model/farmer.model.js";
 import jwt from "jsonwebtoken";
 const FarmerRouter = Router();
-
+FarmerRouter.get("/", async (req, res) => {
+  try {
+    const data = await farmerModel.find();
+    return res
+      .status(200)
+      .json({ success: true, data, message: "Farmers fetched successfully." });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ success: false, message: "Something went wrong." });
+  }
+});
 FarmerRouter.post("/register", async (req, res) => {
   const { payload } = req.body;
 
@@ -41,4 +53,3 @@ FarmerRouter.post("/login", async (req, res) => {
 });
 
 export default FarmerRouter;
-  

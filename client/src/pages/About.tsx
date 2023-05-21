@@ -1,5 +1,6 @@
+import { farmerContext } from '@/Context/FarmerContext'
 import Layout from '@/partials/Layout'
-import React from 'react'
+import React, { useContext } from 'react'
 
 export const About = () => {
   return (

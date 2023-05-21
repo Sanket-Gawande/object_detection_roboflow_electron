@@ -8,19 +8,15 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    // if (!farmer?._id) {
-    //   navigate('/')
-    //   console.log(farmer?._id)
-    // }
   }, [])
 
   return (
     <main className='w-full h-full overflow-y-auto'>
       <ToastContainer position='top-right' />
       <section
-        className='fixed bg-sky-700 text-xl  sm:text-4xl font-semibold text-white md:hidden z-50 inset-0 grid place-items-center h-screen w-full '
+        className='fixed bg-sky-700 text-xl  sm:text-4xl font-semibold text-white lg:hidden z-50 inset-0 grid place-items-center h-screen w-full '
       >
-        Please resize screen to 600x600 atlest
+        Please resize screen to 900x900 atlest
       </section>
       <header className='bg-slate-900 fixed z-[5] flex justify-between px-8 py-4 md:py-6 text-xl md:text-2xl w-full shadow-lg'>
         <NavLink

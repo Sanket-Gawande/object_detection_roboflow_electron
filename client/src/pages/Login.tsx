@@ -37,7 +37,7 @@ export const Login = () => {
         console.log(res.farmer);
         setLoading(false);
         setFarmer(res.farmer);
-        localStorage.setItem('farmer', JSON.stringify(res?.farmer))
+        localStorage.setItem('user', JSON.stringify(res?.farmer))
         navigate('/home')
         return
       }
@@ -50,18 +50,6 @@ export const Login = () => {
 
   }
 
-
-
-  // check if already logged in
-  React.useEffect(() => {
-    // let frmr;
-    // if (!frmr) {
-    //   frmr = JSON.parse(localStorage.getItem('farmer') as string)
-    //   console.log(frmr)
-    //   setFarmer(frmr);
-    //   navigate('/home')
-    // }
-  }, [])
   return (
 
     <main
@@ -76,7 +64,7 @@ export const Login = () => {
           <h4
             className='pb-5 text-2xl font-bold text-white'
           >
-            Login here.
+            Farmer login.
           </h4>
 
           <main

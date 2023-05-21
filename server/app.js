@@ -13,7 +13,7 @@ app.use(
   })
 );
 app.use(express.urlencoded({ extended: false }));
-app.use("/api", FarmerRouter);
+app.use("/api/farmer", FarmerRouter);
 app.use("/api/report", ReportRouter);
 
 dotenv.config();
