@@ -38,11 +38,16 @@ ReportRouter.post("/", async (req, res) => {
   });
 });
 
-ReportRouter.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const akg = await reportModal.find({
-    user_id: id,
-  });
+ReportRouter.get("/:_id", async (req, res) => {
+  const { _id } = req.params;
+  const akg = await farmerModel.find(
+    {
+      _id,
+    },
+    {
+      reports_generated: 1,
+    }
+  );
   res.status(200).json({
     error: false,
     data: akg,
@@ -52,12 +57,19 @@ ReportRouter.get("/:id", async (req, res) => {
 
 ReportRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  const akg = await reportModal.deleteOne({
-    _id: id,
-  });
+  const akg = await farmerModel.updateOne(
+    {},
+    {
+      $pull: {
+        reports_generated: {
+          _id: id,
+        },
+      },
+    }
+  );
   res.status(200).json({
     error: false,
-    data: akg,
+    data: akg.reportModal,
     message: "Report deleted successfully.",
   });
 });

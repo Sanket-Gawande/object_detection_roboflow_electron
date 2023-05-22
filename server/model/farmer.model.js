@@ -8,7 +8,7 @@ const farmerSchema = new Schema(
     survey_no: String,
     area: Number,
     phone: String,
-    a: [String],
+    verified: { type: Boolean, default: false },
     reports_generated: [
       {
         count: { type: Number, required: true },
