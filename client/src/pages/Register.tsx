@@ -66,10 +66,10 @@ export const Register = () => {
           <h4
             className='pb-5 text-2xl font-bold text-white'
           >
-            Register here.
+            Farmer registration.
           </h4>
           <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
+            className='flex flex-col text-slate-200 text-xl'
           >
             <label htmlFor="name">
               Full name
@@ -82,7 +82,7 @@ export const Register = () => {
           </div>
 
           <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
+            className='flex flex-col text-slate-200 text-xl'
           >
             <label htmlFor="phone">
               Phone number
@@ -95,7 +95,7 @@ export const Register = () => {
           </div>
 
           <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
+            className='flex flex-col text-slate-200 text-xl'
           >
             <label htmlFor="email">
               Enter email
@@ -108,7 +108,7 @@ export const Register = () => {
           </div>
 
           <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
+            className='flex flex-col text-slate-200 text-xl'
           >
             <label htmlFor="sur">
               Survey number
@@ -121,7 +121,7 @@ export const Register = () => {
           </div>
 
           <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
+            className='flex flex-col text-slate-200 text-xl'
           >
             <label htmlFor="email">
               Farm Area (in Hector)
@@ -134,7 +134,7 @@ export const Register = () => {
           </div>
 
           <div
-            className='flex items-center space-x-6 text-slate-200 text-xl'
+            className='flex flex-col text-slate-200 text-xl'
           >
             <label htmlFor="email">
               Password

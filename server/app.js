@@ -4,8 +4,16 @@ import cors from "cors";
 import FarmerRouter from "./route/farmer.route.js";
 import ReportRouter from "./route/report.route.js";
 import mongoose from "mongoose";
+import expressSession from "express-session";
+dotenv.config();
 
 const app = express();
+app.use(expressSession({
+  secret : process.env.SESSION_SECRET,
+  saveUninitialized : false,
+  resave : false,
+  
+}))
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(
   express.json({
@@ -13,7 +21,7 @@ app.use(
   })
 );
 app.use(express.urlencoded({ extended: false }));
-app.use("/api", FarmerRouter);
+app.use("/api/farmer", FarmerRouter);
 app.use("/api/report", ReportRouter);
 
 dotenv.config();
