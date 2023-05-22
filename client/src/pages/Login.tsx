@@ -15,7 +15,7 @@ export const Login = () => {
     setLoading(true)
     const payload = extractFormData(e.target);
     // setFarmer(payload)
-    const path = import.meta.env.VITE_BASE_URL + '/api/login';
+    const path = import.meta.env.VITE_BASE_URL + '/api/farmer/login';
     try {
       const req = await fetch(path, {
         method: 'post',
