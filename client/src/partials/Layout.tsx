@@ -54,6 +54,12 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
                 >
                   Count plants
                 </NavLink>
+
+                <button
+                  onClick={() => setFarmer('')}
+                  className='bg-red-500 text-white px-4 py-2  rounded-md'>
+                  Log-out
+                </button>
               </>
               : <>
                 <NavLink
@@ -64,11 +70,6 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
                 </NavLink>
               </>
           }
-
-
-
-
-
 
         </nav>
 

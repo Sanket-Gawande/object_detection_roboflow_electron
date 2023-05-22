@@ -177,7 +177,7 @@ const Counter = () => {
         }
         {
           predictions && imageElement &&
-          <PreviewPredictions onClose={() => { setPredictions(null); setImageElement(null) }} id={image?.name} predictions={predictions} image={imageElement} setter={setPredictions} />
+          <PreviewPredictions type={plantType} onClose={() => { setPredictions(null); setImageElement(null); setImageString(null) }} id={image?.name} predictions={predictions} image={imageElement} setter={setPredictions} />
         }
         {/* {
 
@@ -294,7 +294,10 @@ const Counter = () => {
                     >
                       Add label :
                     </p>
-                    <input type="text" placeholder='eg. cotton' className='bg-transparent py-2 rounded-full mr-4 outline-none ring-0 border text-white font-medium px-4 ' value={plantType} onChange={e => setplantType(e.target.value)} />
+                    <select className='bg-transparent py-2 rounded-full mr-4 outline-none ring-0 border text-white font-medium px-4 ' value={plantType} onChange={e => setplantType(e.target.value)} >
+                      <option className='bg-slate-900' value="Tobacco plant">Tobacco plant</option>
+                      <option className='bg-slate-900' value="cotton plant">cotton plant</option>
+                    </select>
                     <button
                       onClick={handleCountPlants}
                       disabled={loading}

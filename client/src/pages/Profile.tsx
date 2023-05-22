@@ -151,9 +151,9 @@ export const Profile = () => {
                         >
                           Delete
                         </button>
-                        <button
+                        {/* <button
                           className='bg-slate-800 text-white py-2 hover:underline  text-xs px-4 rounded-full'
-                        >Print</button>
+                        >Print</button> */}
                       </div>
                     </div>
                   </div>
