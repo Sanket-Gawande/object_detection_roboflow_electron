@@ -34,8 +34,10 @@ FarmerRouter.post("/", async (req, res) => {
   req.session[payload.email] = otp;
   await send_mail(payload.email, `Please verify your email using otp : ${otp}`);
   const akg = await farmerModel.create(payload);
+  akg.password = undefined;
   return res.status(200).send({
     success: true,
+    data: akg,
     message:
       "Account created, Please verify account using OTP just sent to your account.",
   });
@@ -52,6 +54,13 @@ FarmerRouter.post("/login", async (req, res) => {
       message: "Invalid email and password.",
     });
   }
+  if (!akg.verified) {
+    return res.status(400).send({
+      success: false,
+      message: "Account is not verified.",
+    });
+  }
+
   akg.password = undefined;
   const token = "Sanket"; //jwt.sign(akg, process.env.JWT_SECRET);
   return res
