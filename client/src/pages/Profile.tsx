@@ -133,7 +133,7 @@ export const Profile = () => {
                   >
                     <p
                       className='font-semibold'
-                    >{`${index + 1}`.padStart(3, '0')}) {item?.label}</p>
+                    >({`${index + 1}`.padStart(3, '0')}) {item?.label}</p>
                     <div
                       className='flex space-x-4 lg:items-center flex-col lg:flex-row'
                     >
@@ -162,7 +162,7 @@ export const Profile = () => {
               {
                 !reports?.length &&
                 <main
-                className='border px-4 py-4 text-xl bg-red-600/20 text-red-400 border-current font-semibold'
+                  className='border px-4 py-4 text-xl bg-red-600/20 text-red-400 border-current font-semibold'
                 >
                   <h2>
                     No record found
