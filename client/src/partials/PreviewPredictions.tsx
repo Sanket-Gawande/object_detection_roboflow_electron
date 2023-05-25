@@ -142,7 +142,7 @@ function PreviewPredictions({ image, predictions, id, setter, onClose, type }: {
           <p className='text-xl text-slate-700 pt-4 font-semibold'>
             Plant deletct {predictions.length}
             <br />
-            {type}are {predictions.filter(a => a.class === type).length}
+            {type} are {predictions.filter(a => a.class === type).length}
           </p>
           <button
             onClick={() => setShowReport(true)}

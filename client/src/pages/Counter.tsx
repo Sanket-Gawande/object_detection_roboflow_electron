@@ -25,7 +25,7 @@ const Counter = () => {
   const [imageElement, setImageElement] = React.useState<HTMLImageElement | null>(null);
   const [error, setError] = React.useState<null | string>(null);
   const [viewReport, setViewReport] = React.useState(false);
-  const [plantType, setplantType] = React.useState('Cotton');
+  const [plantType, setplantType] = React.useState('');
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   // state to preview predictions modal
@@ -295,6 +295,7 @@ const Counter = () => {
                       Add label :
                     </p>
                     <select className='bg-transparent py-2 rounded-full mr-4 outline-none ring-0 border text-white font-medium px-4 ' value={plantType} onChange={e => setplantType(e.target.value)} >
+                      <option className='bg-slate-900' value="">--Select plant--</option>
                       <option className='bg-slate-900' value="Tobacco plant">Tobacco plant</option>
                       <option className='bg-slate-900' value="cotton plant">cotton plant</option>
                     </select>
