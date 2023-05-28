@@ -33,3 +33,5 @@ yarn.lock
 /playwright/.cache/
 /server/.env
 .env
+/server/__pycache__
+__pycache__
