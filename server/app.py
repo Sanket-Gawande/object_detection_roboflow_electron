@@ -31,7 +31,7 @@ def detect_objects():
         timestamp_string = get_timestamp_string()
         image_path = timestamp_string + '_image.jpg'
         image.save(image_path)
-        
+
         results = model.predict(image_path)
         results = results[0]
         response = []
@@ -54,6 +54,11 @@ def detect_objects():
                     'predictions': response
                 }
             }
+        if os.path.exists(image_path):
+            os.remove(image_path)
+            print('Image deleted successfully')
+        else:
+            print('Image not found')
         return jsonify(data), 200
 
 
