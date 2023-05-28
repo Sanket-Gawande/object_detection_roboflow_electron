@@ -19,6 +19,24 @@ FarmerRouter.get("/", async (req, res) => {
   }
 });
 
+// get farmer by id
+FarmerRouter.get("/:_id", async (req, res) => {
+  const { _id } = req.params;
+  const farmer = await farmerModel.findOne({ _id });
+  if (!farmer) {
+    return res.status(400).send({
+      error: true,
+      message: "Invalid farmer.",
+    });
+  }
+  farmer.password = undefined;
+  return res.status(200).send({
+    error: false,
+    data: farmer,
+    message: "Farmer fetched successfully.",
+  });
+});
+
 //  create farmers
 FarmerRouter.post("/", async (req, res) => {
   const { payload } = req.body;
@@ -138,7 +156,7 @@ FarmerRouter.post("/forgot-password-request", async (req, res) => {
     );
     console.log(req.session);
     return res.status(200).send({
-      error: true,
+      error: false,
       message: "Please verify otp sent to your email",
     });
   } catch (error) {
@@ -184,5 +202,33 @@ FarmerRouter.post("/forgot-password", async (req, res) => {
     });
   }
   res.end();
+});
+
+//  profile update
+FarmerRouter.post("/update", async (req, res) => {
+  const payload = req.body;
+  try {
+    const data = await farmerModel.findOneAndUpdate(
+      {
+        _id: payload._id,
+      },
+      {
+        $set: {
+          ...payload,
+        },
+      }
+    );
+    console.log(data, payload);
+    return res.status(200).json({
+      error: false,
+      message: "Profile updated successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      error: true,
+      message: "Failed to update profile",
+    });
+  }
 });
 export default FarmerRouter;

@@ -1,11 +1,23 @@
 import { Prediction } from '@/pages/Counter';
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { ChangeEvent, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 import PritTemplate from './PrintTemplate';
+import Save_Report from '../../service/create_report.service';
+import { farmerContext } from '@/Context/FarmerContext';
+import { toast } from 'react-toastify';
 
 function PreviewPredictions({ image, predictions, id, setter, onClose, type }: { onClose: () => void, image: HTMLImageElement, predictions: Prediction[], setter: Dispatch<SetStateAction<Prediction[] | null>>, id: string | undefined, type: string }) {
 
+  const { farmer } = useContext(farmerContext);
   const [dim, setDim] = useState({ width: 640, height: 640 });
-  const [show_report, setShowReport] = useState(false)
+  const [show_report, setShowReport] = useState(false);
+
+  async function handle_save_report() {
+    const data = await Save_Report(farmer?._id, predictions.length, type);
+    console.log(data)
+    if (data.error) toast(data.message, { type: 'error', position: 'top-right' })
+    toast(data.message, { type: 'success', position: 'top-right' })
+  }
+
   useEffect(() => {
 
     setDim({ width: image.width, height: image.height })
@@ -19,53 +31,65 @@ function PreviewPredictions({ image, predictions, id, setter, onClose, type }: {
         ctx.drawImage(image, 0, 0, image.width, image.height);
       }
       const canvas_element2 = document.querySelector('.predictions-canvas') as HTMLCanvasElement;
-      if (canvas_element) {
+      if (canvas_element2) {
         const ctx2 = canvas_element2.getContext('2d')
         if (ctx2) {
           ctx2?.clearRect(0, 0, image.width, image.height)
           for (let i = 0; i < predictions.length; i++) {
+
             const prediction = predictions[i] as Prediction;
-            type === predictions[i].class ?
-              ctx2.strokeStyle = 'red' : ctx2.strokeStyle = 'white'
+
+            type.toLowerCase() === predictions[i].class.toLowerCase() ?
+              ctx2.strokeStyle = 'red' : ctx2.strokeStyle = 'orange'
             ctx2.lineWidth = 4;
-            ctx2.strokeRect(prediction.x - 50, prediction.y - 50, prediction.width, prediction.height);
-            // adding label on bounding box 
+            ctx2.strokeRect(prediction.x, prediction.y, prediction.width, prediction.height);
+            // adding label on bounding box   
             ctx2.fillStyle = 'blue';
             ctx2.font = '20px Arial';
-            ctx2.fillText(`${prediction.class} (${i + 1})`, prediction.x - 50, prediction.y - 50);
+            ctx2.fillText(`${prediction.class} (${i + 1})`, prediction.x, prediction.y);
           }
         }
       }
     }
-  })
+  }, [dim.height])
 
   // change markers
   useEffect(() => {
-    const canvas_element = document.querySelector('.predictions-canvas') as HTMLCanvasElement;
-    if (canvas_element) {
-      const ctx = canvas_element.getContext('2d')
-      //  draw predictions on canvas, mapping them on image
-      if (ctx) {
-        ctx?.clearRect(0, 0, image.width, image.height)
-        for (let i = 0; i < predictions.length; i++) {
-          const prediction = predictions[i] as Prediction;
-          ctx.strokeStyle = 'red';
-          ctx.lineWidth = 4;
-          ctx.strokeRect(prediction.x - 100, prediction.y - 100, prediction.width, prediction.height);
-          // adding label on bounding box 
-          ctx.fillStyle = 'white';
-          ctx.font = '20px Arial';
-          ctx.fillText(`${prediction.class} (${i + 1})`, prediction.x - 100, prediction.y - 100);
-        }
-      }
-    }
-  }, [predictions.length, predictions.length])
+    // const canvas_element = document.querySelector('.predictions-canvas') as HTMLCanvasElement;
+    // if (canvas_element) {
+    //   const ctx = canvas_element.getContext('2d')
+    //   //  draw predictions on canvas, mapping them on image
+    //   if (ctx) {
+
+    //     ctx?.clearRect(0, 0, image.width, image.height)
+    //     for (let i = 0; i < predictions.length; i++) {
+    //       const prediction = predictions[i] as Prediction;
+    //       type === predictions[i].class ?
+    //         ctx.strokeStyle = 'red' : ctx.strokeStyle = 'white'
+    //       ctx.lineWidth = 4;
+    //       ctx.strokeRect(prediction.x, prediction.y, prediction.width, prediction.height);
+    //       // adding label on bounding box 
+    //       ctx.fillStyle = 'blue';
+    //       ctx.font = '20px Arial';
+    //       ctx.fillText(`${prediction.class} (${i + 1})`, prediction.x, prediction.y);
+    //     }
+    //   }
+    // }
+  }, [])
   // (${(prediction.confidence * 100).toFixed(2)}%)
   return (
 
     <section
       className='fixed inset-0 h-full bg-black/50 p-28'
     >
+      {/* <pre
+        className='text-white'
+      >
+
+        {
+          JSON.stringify(predictions, null, 4)
+        }
+      </pre> */}
       {
         show_report
           // print preview component
@@ -142,10 +166,10 @@ function PreviewPredictions({ image, predictions, id, setter, onClose, type }: {
           <p className='text-xl text-slate-700 pt-4 font-semibold'>
             Plant deletct {predictions.length}
             <br />
-            {type}are {predictions.filter(a => a.class === type).length}
+            {type} are {predictions.filter(a => a.class === type).length}
           </p>
           <button
-            onClick={() => setShowReport(true)}
+            onClick={() => { setShowReport(true); handle_save_report() }}
             className='px-4 py-2 bg-sky-700/10 mt-4'>
             View and Save report
           </button>

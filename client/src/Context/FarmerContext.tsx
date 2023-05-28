@@ -16,7 +16,7 @@ const FarmerContext = ({ children }: { children: ReactNode }) => {
    */
   useEffect(() => {
     console.log(farmer)
-    const user = JSON.parse(localStorage.getItem('user') || '')
+    const user = JSON.parse(localStorage.getItem('user') as string)
     if (user) {
       setFarmer((user))
     }
