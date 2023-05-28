@@ -1,19 +1,21 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import { connect } from "mongoose";
+import expressSession from "express-session";
 import FarmerRouter from "./route/farmer.route.js";
 import ReportRouter from "./route/report.route.js";
-import mongoose from "mongoose";
-import expressSession from "express-session";
+import AdminRouter from "./route/admin.route.js";
 dotenv.config();
 
 const app = express();
-app.use(expressSession({
-  secret : process.env.SESSION_SECRET,
-  saveUninitialized : false,
-  resave : false,
-  
-}))
+app.use(
+  expressSession({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    resave: false,
+  })
+);
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(
   express.json({
@@ -23,6 +25,7 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/farmer", FarmerRouter);
 app.use("/api/report", ReportRouter);
+app.use("/api/admin", AdminRouter);
 
 dotenv.config();
 
@@ -46,8 +49,7 @@ app.post("/api/v1/count", async (req, res) => {
   });
 });
 
-mongoose
-  .connect(process.env.MONGO_URI)
+connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected.");
     app.listen(port, () => {

@@ -43,9 +43,12 @@ const indexHtml = join(process.env.DIST, "index.html");
 async function createWindow() {
   win = new BrowserWindow({
     title: "Logger Drone",
+    
     icon: join(process.env.PUBLIC, "favicon.ico"),
     webPreferences: {
       preload,
+      // devTools: false,
+      
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // Consider using contextBridge.exposeInMainWorld
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
@@ -104,6 +107,7 @@ ipcMain.handle("open-win", (_, arg) => {
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,
+     
       nodeIntegration: true,
       contextIsolation: false,
     },
