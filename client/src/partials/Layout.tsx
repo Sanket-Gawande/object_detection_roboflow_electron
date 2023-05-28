@@ -1,12 +1,18 @@
 import { farmerContext } from '@/Context/FarmerContext'
 import React, { ReactNode, useContext } from 'react'
-import { NavLink, useHref, useNavigate, useParams, useRoutes } from 'react-router-dom'
+import { Link, NavLink, useHref, useNavigate, useParams, useRoutes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { farmer, setFarmer } = useContext(farmerContext);
   const navigate = useNavigate();
 
+
+  function handle_logout() {
+    setFarmer({});
+    localStorage.setItem('user', 'null')
+    navigate('/')
+  }
   React.useEffect(() => {
   }, [])
 
@@ -40,7 +46,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
             About
           </NavLink>
           {
-            farmer?._id
+            farmer?._id && farmer?.role !== 'admin'
               ? <>
                 <NavLink
                   className='hover:text-sky-200'
@@ -56,19 +62,31 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
                 </NavLink>
 
                 <button
-                  onClick={() => setFarmer('')}
+                  onClick={handle_logout}
                   className='bg-red-500 text-white px-4 py-2  rounded-md'>
                   Log-out
                 </button>
               </>
               : <>
-                <NavLink
-                  className='hover:text-sky-200'
-                  to={'/'}
-                >
-                  Login
-                </NavLink>
+                {
+                  farmer?.role === 'admin'
+                    ? null
+                    :
+
+                    <NavLink
+                      className='hover:text-sky-200'
+                      to={'/'}
+                    >
+                      Login
+                    </NavLink>
+                }
               </>
+          }
+
+          {
+            farmer?._id && farmer?.role === 'admin'
+              ? <Link to={'/admin/farmer/all'}>View farmers</Link>
+              : null
           }
 
         </nav>

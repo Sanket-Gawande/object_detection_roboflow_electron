@@ -10,6 +10,9 @@ import { Profile } from './pages/Profile'
 import { Register } from './pages/Register'
 
 import "react-toastify/dist/ReactToastify.css";
+import { ForgotPassword } from './pages/ForgotPassword'
+import { AdminLogin } from './pages/Admin.Login'
+import AllFarmers from './pages/AllFarmers'
 
 const App = () => {
   const router = createHashRouter(
@@ -17,6 +20,11 @@ const App = () => {
       {
         path: '/',
         element: <Login />
+
+      },
+      {
+        path: '/admin/login',
+        element: <AdminLogin/>
 
       },
       {
@@ -37,8 +45,17 @@ const App = () => {
 
       },
       {
+        path: '/forgot-password',
+        element: <ForgotPassword />
+
+      },
+      {
         path: '/home',
         element: <Home />
+      },
+      {
+        path: '/admin/farmer/all',
+        element: <AllFarmers />
       }
 
     ]

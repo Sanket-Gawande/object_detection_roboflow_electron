@@ -12,6 +12,7 @@ const ReportRouter = Router();
  */
 
 ReportRouter.post("/", async (req, res) => {
+  console.log(req.body);
   const payload = req.body;
   console.log(payload);
   if (!payload.count || !payload.label || !payload.farmer_id) {
@@ -26,7 +27,6 @@ ReportRouter.post("/", async (req, res) => {
     {
       $push: { reports_generated: payload },
     },
-
     {
       upsert: true,
     }
@@ -40,7 +40,7 @@ ReportRouter.post("/", async (req, res) => {
 
 ReportRouter.get("/:_id", async (req, res) => {
   const { _id } = req.params;
-  const akg = await farmerModel.find(
+  const akg = await farmerModel.findOne(
     {
       _id,
     },
@@ -50,26 +50,32 @@ ReportRouter.get("/:_id", async (req, res) => {
   );
   res.status(200).json({
     error: false,
-    data: akg,
+    data: akg?.reports_generated || [],
     message: "Reports fetched successfully.",
   });
 });
 
-ReportRouter.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  const akg = await farmerModel.updateOne(
-    {},
+
+/**
+ * @param {fid} string
+ * @param {rid} string
+ */
+ReportRouter.delete("/:fid/:rid", async (req, res) => {
+  const { fid: _id, rid } = req.params;
+  const akg = await farmerModel.findOneAndUpdate(
+    { _id },
     {
       $pull: {
         reports_generated: {
-          _id: id,
+          _id: rid,
         },
       },
     }
   );
+  console.log(_id, akg);
   res.status(200).json({
     error: false,
-    data: akg.reportModal,
+    data: null,
     message: "Report deleted successfully.",
   });
 });

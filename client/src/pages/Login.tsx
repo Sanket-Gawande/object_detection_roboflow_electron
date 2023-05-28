@@ -55,6 +55,7 @@ export const Login = () => {
     <main
       className='w-full p-8'
     >
+     
       <ToastContainer position='top-right' />
       <section className='w-11/12 max-w-[600px] shadow-2xl border-slate-600 p-8 rounded-xl bg-slate-900/30 border mx-auto mt-24 text-md'>
         <form
@@ -117,8 +118,23 @@ export const Login = () => {
               to={'/register'}>
               Sign-up here</Link>
           </p>
+          <p
+            className='text-slate-300 text-lg text-right pt-4'
+          >
+            Forgot password,
+            <Link
+              className='text-sky-600 ml-1 underline'
+              to={'/forgot-password'}>
+              Reset here</Link>
+          </p>
         </form>
       </section>
+      <Link
+      className='absolute bottom-4 right-4'
+        to={'/admin/login'}
+      >
+        Admin login
+      </Link>
     </main>
 
   )

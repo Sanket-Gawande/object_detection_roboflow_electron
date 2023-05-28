@@ -1,16 +1,11 @@
 const path = import.meta.env.VITE_BASE_URL + "/api/report";
 export default async function Save_Report(
-  user: {
-    name: string;
-    survey_no: string;
-    email: string;
-    area: number;
-  },
+  farmer_id: string,
   count: number = 0,
   label: string
 ) {
   const payload = {
-    ...user,
+    farmer_id,
     count,
     label,
   };
@@ -32,8 +27,8 @@ export async function get_my_reports(id: string) {
   return res;
 }
 
-export async function delete_my_reports(id: string) {
-  const path = import.meta.env.VITE_BASE_URL + "/api/report/" + id;
+export async function delete_my_reports(fid: string, rid: string) {
+  const path = `${import.meta.env.VITE_BASE_URL}/api/report/${fid}/${rid}`;
   const req = await fetch(path, {
     method: "DELETE",
     credentials: "include",

@@ -6,6 +6,7 @@ import save_report from '../../service/create_report.service'
 import { farmerContext } from '@/Context/FarmerContext'
 import { toast } from 'react-toastify'
 import PreviewPredictions from '@/partials/PreviewPredictions'
+import promises from '@/utils/promises'
 export type Prediction = {
   x: number;
   y: number;
@@ -21,7 +22,7 @@ const Counter = () => {
   const [image, setImage] = React.useState<File | null>(null);
   const [imageString, setImageString] = React.useState<string | null>(null);
   const [result, setResult] = React.useState<boolean | null | string>(null);
-  const [count, setCount] = React.useState([])
+  const [count, setCount] = React.useState<Prediction[]>([])
   const [imageElement, setImageElement] = React.useState<HTMLImageElement | null>(null);
   const [error, setError] = React.useState<null | string>(null);
   const [viewReport, setViewReport] = React.useState(false);
@@ -61,28 +62,25 @@ const Counter = () => {
   }
 
   async function handleCountPlants() {
-    // setResult('loading')
-    // const type = prompt('Please enter plant type') || '';
-    // setplantType(type);
+    
     if (!plantType) { return alert('Plant type required.') }
     if (!image || !imageString) return;
     setLoading(true);
-    const api = `${import.meta.env.VITE_BASE_URL}/api/v1/count`
-    const req = await fetch(api, {
-      method: 'POST',
-      body: JSON.stringify({
-        image: imageString
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const res = await req.json();
+    
+    const is_python = import.meta.env.VITE_DETECT_ENV === 'PYTHON'
+    const api = is_python
+      ? promises.PYTHON
+      : promises.NODE
+
+    // const res = await api(is_python ? image : imageString);
+    const res = is_python ? await promises.PYTHON(image) : await promises.NODE(imageString)
+
+    setLoading(false)
     if (res.status === 'success') {
       // error handling
       // console.log(res.data.predictions);
       if (res.data.predictions.length === 0) {
-        setError('no plants found')
+        setError('No Tobacco or Cotton plants found')
         setLoading(false);
         return;
       }
@@ -100,32 +98,33 @@ const Counter = () => {
       setResult('success');
     }
   }
-  useEffect(() => {
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        setResult(null);
-      }
-    })
+  
+  // useEffect(() => {
+  //   window.addEventListener('keydown', (e) => {
+  //     if (e.key === 'Escape') {
+  //       setResult(null);
+  //     }
+  //   })
 
-  }, [])
+  // }, [])
 
 
   //  draw image on canvas once image is loaded
-  useEffect(() => {
-    getData();
-  }, [imageElement?.id])
+  // useEffect(() => {
+  //   getData();
+  // }, [imageElement?.id])
 
-  function getData() {
-    if (canvasRef.current && imageElement) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        canvas.width = imageElement.width;
-        canvas.height = imageElement.height;
-        ctx.drawImage(imageElement, 0, 0, imageElement.width, imageElement.height);
-      }
-    }
-  }
+  // function getData() {
+  //   if (canvasRef.current && imageElement) {
+  //     const canvas = canvasRef.current;
+  //     const ctx = canvas.getContext('2d');
+  //     if (ctx) {
+  //       canvas.width = imageElement.width;
+  //       canvas.height = imageElement.height;
+  //       ctx.drawImage(imageElement, 0, 0, imageElement.width, imageElement.height);
+  //     }
+  //   }
+  // }
 
   return (
     <Layout>

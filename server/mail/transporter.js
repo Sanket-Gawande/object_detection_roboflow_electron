@@ -1,5 +1,5 @@
 import { createTransport } from "nodemailer";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const transport = createTransport({
@@ -20,6 +20,7 @@ export async function send_mail(
   try {
     const acknowledgement = await transport.sendMail({
       to,
+      sender: "Sanket Gawande",
       html,
       from,
       subject,
