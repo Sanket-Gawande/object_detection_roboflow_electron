@@ -10,12 +10,12 @@ FarmerRouter.get("/", async (req, res) => {
     const data = await farmerModel.find();
     return res
       .status(200)
-      .json({ success: true, data, message: "Farmers fetched successfully." });
+      .json({ error: false, data, message: "Farmers fetched successfully." });
   } catch (error) {
     console.log(error);
     return res
       .status(400)
-      .json({ success: false, message: "Something went wrong." });
+      .json({ error: true, message: "Something went wrong." });
   }
 });
 
