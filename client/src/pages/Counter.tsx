@@ -62,11 +62,11 @@ const Counter = () => {
   }
 
   async function handleCountPlants() {
-    
+
     if (!plantType) { return alert('Plant type required.') }
     if (!image || !imageString) return;
     setLoading(true);
-    
+
     const is_python = import.meta.env.VITE_DETECT_ENV === 'PYTHON'
     const api = is_python
       ? promises.PYTHON
@@ -76,6 +76,11 @@ const Counter = () => {
     const res = is_python ? await promises.PYTHON(image) : await promises.NODE(imageString)
 
     setLoading(false)
+    if (!res.status) {
+      setError(res.message || 'Image type error')
+      setLoading(false);
+      return;
+    }
     if (res.status === 'success') {
       // error handling
       // console.log(res.data.predictions);
@@ -98,7 +103,7 @@ const Counter = () => {
       setResult('success');
     }
   }
-  
+
   // useEffect(() => {
   //   window.addEventListener('keydown', (e) => {
   //     if (e.key === 'Escape') {
@@ -138,9 +143,8 @@ const Counter = () => {
               ptype={plantType}
               setViewReport={setViewReport}
               setResult={setResult}
-              image={canvasRef.current?.toDataURL('png', 1) || '/placeholder.png'}
+
               count={count.length || 0}
-              name='Mr. Gopal Jawle'
             />
             : null
         }

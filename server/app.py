@@ -10,7 +10,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-model = YOLO('model.pt')
+model = YOLO('best.pt')
 
 
 def get_timestamp_string():
@@ -25,6 +25,16 @@ def detect_objects():
     else:
 
         image_data = request.files['image'].read()
+        image = request.files['image']
+        if image.filename.split('.')[-1].lower() not in ['jpg', 'jpeg']:
+            error_message = 'Invalid file format. Only JPG and JPEG files are allowed.'
+            return jsonify({
+                'status': False,
+                'message' : error_message,
+                'data': {
+                    'predictions': []
+                }
+            }), 400
         image = Image.open(io.BytesIO(image_data))
 
         # Save the image file
