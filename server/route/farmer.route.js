@@ -40,5 +40,29 @@ FarmerRouter.post("/login", async (req, res) => {
     .send({ success: true, message: "Logeed in.", farmer: akg });
 });
 
+FarmerRouter.post("/farmer/update", async (req, res) => {
+  const { payload } = req.body;
+  console.log(payload);
+  return;
+  const akg = await farmerModel.updateOne({ _id: payload.id });
+
+  if (!payload._id) {
+    return res.status(400).send({
+      success: false,
+      message: "Please add missing parameters.",
+    });
+  }
+
+  akg.password = undefined;
+  const token = "Sanket"; //jwt.sign(akg, process.env.JWT_SECRET);
+  return res
+    .status(200)
+    .cookie("token", token, { secure: true, maxAge: 86400 })
+    .send({
+      success: true,
+      message: "Profile updated successfully",
+      farmer: akg,
+    });
+});
+
 export default FarmerRouter;
-  

@@ -5,14 +5,19 @@ import React, { useContext, useEffect, useState } from 'react'
 import { delete_my_reports, get_my_reports } from '../../service/create_report.service';
 import { toast } from 'react-toastify';
 import { AiFillInfoCircle, AiOutlineInfo } from 'react-icons/ai';
-
+import { update_farmer } from '../../service/farmer.service'
 export const Profile = () => {
   const { farmer, setFarmer } = useContext(farmerContext);
-  const [reports, setReport] = useState(null)
+  const [reports, setReport] = useState(null);
+  const [loading, setLoading] = useState(false)
   async function handleForm(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
     const payload = extractFormData(e.target);
-    setFarmer(payload)
+    setLoading(true);
+    const akg = await update_farmer(payload)
+    setFarmer(payload);
+    toast(akg.message, { type: 'success' })
+    setLoading(false)
   }
   const load_reports = async () => {
     const data = await get_my_reports(farmer._id);
@@ -26,7 +31,7 @@ export const Profile = () => {
   }
 
   useEffect(() => {
-    load_reports()
+    !reports && load_reports();
   }, [])
   return (
     <Layout>
@@ -105,9 +110,14 @@ export const Profile = () => {
             </div>
 
             <button
+              // disabled={loading}
               className='rounded-full px-6 py-3 bg-sky-600 text-white text-xl hover:scale-[.99] transform transition-all hover:bg-sky-700'
             >
-              Update
+              {
+                loading
+                  ? 'Please wait...'
+                  : 'Update'
+              }
             </button>
           </form>
           <section
@@ -162,7 +172,7 @@ export const Profile = () => {
               {
                 !reports?.length &&
                 <main
-                className='border px-4 py-4 text-xl bg-red-600/20 text-red-400 border-current font-semibold'
+                  className='border px-4 py-4 text-xl bg-red-600/20 text-red-400 border-current font-semibold'
                 >
                   <h2>
                     No record found
