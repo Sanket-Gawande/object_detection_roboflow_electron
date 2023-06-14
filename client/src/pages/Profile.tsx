@@ -9,7 +9,7 @@ import { update_farmer } from '../../service/farmer.service'
 export const Profile = () => {
   
   const { farmer, setFarmer } = useContext(farmerContext);
-  const [reports, setReport] = useState(null);
+  const [reports, setReport] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(false)
   async function handleForm(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
