@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { AiFillInfoCircle, AiOutlineInfo } from 'react-icons/ai';
 import { update_farmer } from '../../service/farmer.service'
 export const Profile = () => {
+  
   const { farmer, setFarmer } = useContext(farmerContext);
   const [reports, setReport] = useState(null);
   const [loading, setLoading] = useState(false)
@@ -19,35 +20,36 @@ export const Profile = () => {
     toast(akg.message, { type: 'success' })
     setLoading(false)
   }
+
+  console.log(farmer?._id)
   const load_reports = async () => {
-    const data = await get_my_reports(farmer._id);
+    const data = await get_my_reports(farmer?._id);
     setReport(data.data)
+
     toast(data.message, { type: 'success' })
   }
   const delete_report = async (id: string) => {
-    const data = await delete_my_reports(id)
+    const data = await delete_my_reports(farmer?._id, id)
     toast(data.message, { type: 'info' })
     load_reports()
   }
 
   useEffect(() => {
-    !reports && load_reports();
-  }, [])
+    farmer?._id && load_reports()
+  }, [farmer?._id])
   return (
     <Layout>
       <main
         className='w-full p-8'
       >
-
-        {/* cover and profile */}
         <div className='bg-[url("/cover.jpg")]  relative w-full h-44'>
-          <img src="/placeholder.jpg" className='absolute left-8 -bottom-16 shadow-xl rounded-full w-44 h-44 object-cover' alt="" />
+          <img src="/placeholder.webp" className='absolute left-8 -bottom-16 shadow-sm shadow-lime-100 rounded-full w-44 h-44 object-cover' alt="" />
         </div>
 
-        <section className='flex px-12  mx-auto mt-24 text-md'>
+        <section className='flex px-12 justify-between  mx-auto mt-24 text-md'>
           <form
             onSubmit={handleForm}
-            className='space-y-6 w-1/2'
+            className='space-y-6 w-1/3'
           >
             <div
               className='flex flex-col text-slate-200 text-xl'
@@ -110,18 +112,18 @@ export const Profile = () => {
             </div>
 
             <button
-              // disabled={loading}
+              disabled={loading}
               className='rounded-full px-6 py-3 bg-sky-600 text-white text-xl hover:scale-[.99] transform transition-all hover:bg-sky-700'
             >
               {
                 loading
-                  ? 'Please wait...'
+                  ? 'Please wait'
                   : 'Update'
               }
             </button>
           </form>
           <section
-            className='w-2/3 px-12 lg:px-24 space-y-6 text-white'
+            className='w-1/2 px-12 lg:px-24 space-y-6 text-white'
           >
             <h3
               className='text-xl font-semibold'
@@ -132,10 +134,10 @@ export const Profile = () => {
               className=''
             >
               {
-                reports && reports.map((item: {
+                reports && reports?.map((item: {
                   label: string,
                   _id: string,
-                  createdAt: string
+                  date: string
                 }, index: number) =>
                   <div
                     key={index}
@@ -143,27 +145,29 @@ export const Profile = () => {
                   >
                     <p
                       className='font-semibold'
-                    >{`${index + 1}`.padStart(3, '0')}) {item?.label}</p>
+                    >({`${index + 1}`.padStart(3, '0')}) {item?.label}</p>
                     <div
                       className='flex space-x-4 lg:items-center flex-col lg:flex-row'
                     >
                       <p
                         className='text-slate-300'
                       >
-                        {new Date(item?.createdAt).toLocaleString('en-in', { dateStyle: 'full' })}
+                        {new Date(item?.date).toLocaleString('en-in', { dateStyle: 'full' })}
                       </p>
                       <div
                         className='space-x-2'
                       >
                         <button
-                          onClick={() => delete_report(item._id)}
+                          onClick={() => {
+                            delete_report(item._id)
+                          }}
                           className='bg-red-500 text-white py-2 hover:underline text-xs px-4 rounded-full'
                         >
                           Delete
                         </button>
-                        <button
+                        {/* <button
                           className='bg-slate-800 text-white py-2 hover:underline  text-xs px-4 rounded-full'
-                        >Print</button>
+                        >Print</button> */}
                       </div>
                     </div>
                   </div>
@@ -174,6 +178,7 @@ export const Profile = () => {
                 <main
                   className='border px-4 py-4 text-xl bg-red-600/20 text-red-400 border-current font-semibold'
                 >
+
                   <h2>
                     No record found
                   </h2>

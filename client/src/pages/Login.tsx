@@ -15,7 +15,7 @@ export const Login = () => {
     setLoading(true)
     const payload = extractFormData(e.target);
     // setFarmer(payload)
-    const path = import.meta.env.VITE_BASE_URL + '/api/login';
+    const path = import.meta.env.VITE_BASE_URL + '/api/farmer/login';
     try {
       const req = await fetch(path, {
         method: 'post',
@@ -37,7 +37,7 @@ export const Login = () => {
         console.log(res.farmer);
         setLoading(false);
         setFarmer(res.farmer);
-        localStorage.setItem('farmer', JSON.stringify(res?.farmer))
+        localStorage.setItem('user', JSON.stringify(res?.farmer))
         navigate('/home')
         return
       }
@@ -50,23 +50,12 @@ export const Login = () => {
 
   }
 
-
-
-  // check if already logged in
-  React.useEffect(() => {
-    // let frmr;
-    // if (!frmr) {
-    //   frmr = JSON.parse(localStorage.getItem('farmer') as string)
-    //   console.log(frmr)
-    //   setFarmer(frmr);
-    //   navigate('/home')
-    // }
-  }, [])
   return (
 
     <main
       className='w-full p-8'
     >
+     
       <ToastContainer position='top-right' />
       <section className='w-11/12 max-w-[600px] shadow-2xl border-slate-600 p-8 rounded-xl bg-slate-900/30 border mx-auto mt-24 text-md'>
         <form
@@ -76,7 +65,7 @@ export const Login = () => {
           <h4
             className='pb-5 text-2xl font-bold text-white'
           >
-            Login here.
+            Farmer login.
           </h4>
 
           <main
@@ -129,8 +118,23 @@ export const Login = () => {
               to={'/register'}>
               Sign-up here</Link>
           </p>
+          <p
+            className='text-slate-300 text-lg text-right pt-4'
+          >
+            Forgot password,
+            <Link
+              className='text-sky-600 ml-1 underline'
+              to={'/forgot-password'}>
+              Reset here</Link>
+          </p>
         </form>
       </section>
+      <Link
+      className='absolute bottom-4 right-4'
+        to={'/admin/login'}
+      >
+        Admin login
+      </Link>
     </main>
 
   )

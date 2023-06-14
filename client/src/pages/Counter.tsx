@@ -1,11 +1,13 @@
 import Layout from '@/partials/Layout'
 import { FileUploader } from 'react-drag-drop-files'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PritTemplate from '@/partials/PrintTemplate'
 import save_report from '../../service/create_report.service'
 import { farmerContext } from '@/Context/FarmerContext'
 import { toast } from 'react-toastify'
-type Prediction = {
+import PreviewPredictions from '@/partials/PreviewPredictions'
+import promises from '@/utils/promises'
+export type Prediction = {
   x: number;
   y: number;
   width: number;
@@ -20,15 +22,16 @@ const Counter = () => {
   const [image, setImage] = React.useState<File | null>(null);
   const [imageString, setImageString] = React.useState<string | null>(null);
   const [result, setResult] = React.useState<boolean | null | string>(null);
-  const [count, setCount] = React.useState([])
+  const [count, setCount] = React.useState<Prediction[]>([])
   const [imageElement, setImageElement] = React.useState<HTMLImageElement | null>(null);
   const [error, setError] = React.useState<null | string>(null);
   const [viewReport, setViewReport] = React.useState(false);
-  const [season, setseason] = React.useState('summer');
-  const [plantType, setplantType] = React.useState('Cotton');
+  const [plantType, setplantType] = React.useState('');
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
-
+  // state to preview predictions modal
+  const [enablePreview, setEnablePreview] = useState(false);
+  const [predictions, setPredictions] = useState<null | Prediction[]>(null);
 
   function getBase64FromFile(image: File | string) {
     const file = image as File;
@@ -59,28 +62,30 @@ const Counter = () => {
   }
 
   async function handleCountPlants() {
-    // setResult('loading')
-    // const type = prompt('Please enter plant type') || '';
-    // setplantType(type);
+
     if (!plantType) { return alert('Plant type required.') }
     if (!image || !imageString) return;
     setLoading(true);
-    const api = `${import.meta.env.VITE_BASE_URL}/api/v1/count`
-    const req = await fetch(api, {
-      method: 'POST',
-      body: JSON.stringify({
-        image: imageString
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const res = await req.json();
+
+    const is_python = import.meta.env.VITE_DETECT_ENV === 'PYTHON'
+    const api = is_python
+      ? promises.PYTHON
+      : promises.NODE
+
+    // const res = await api(is_python ? image : imageString);
+    const res = is_python ? await promises.PYTHON(image) : await promises.NODE(imageString)
+
+    setLoading(false)
+    if (!res.status) {
+      setError(res.message || 'Image type error')
+      setLoading(false);
+      return;
+    }
     if (res.status === 'success') {
       // error handling
-      console.log(res.data.predictions);
+      // console.log(res.data.predictions);
       if (res.data.predictions.length === 0) {
-        setError('no plants found')
+        setError('No Tobacco or Cotton plants found')
         setLoading(false);
         return;
       }
@@ -93,56 +98,38 @@ const Counter = () => {
       const { data } = res;
 
       setCount(data.predictions);
-
-      if (canvasRef.current && imageElement) {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        const predictions = data.predictions as Prediction[];
-        if (ctx) {
-          for (let i = 0; i < predictions.length; i++) {
-            const prediction = predictions[i] as Prediction;
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 4;
-            ctx.strokeRect(prediction.x - 30, prediction.y - 30, prediction.width, prediction.height);
-            ctx.fillStyle = 'blue';
-            ctx.font = '24px Arial';
-            ctx.fillText(`${prediction.class} (${i + 1})`, prediction.x - 25, prediction.y - 35);
-          }
-          ctx.fillStyle = 'blue';
-          ctx.fillText(`Total plants: ${predictions.length}`, 10, 50);
-        }
-      }
+      setPredictions(data.predictions)
       setLoading(false);
       setResult('success');
     }
   }
 
-  useEffect(() => {
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        setResult(null);
-      }
-    })
+  // useEffect(() => {
+  //   window.addEventListener('keydown', (e) => {
+  //     if (e.key === 'Escape') {
+  //       setResult(null);
+  //     }
+  //   })
 
-  }, [])
+  // }, [])
 
 
   //  draw image on canvas once image is loaded
-  useEffect(() => {
-    getData();
-  }, [imageElement?.id])
+  // useEffect(() => {
+  //   getData();
+  // }, [imageElement?.id])
 
-  function getData() {
-    if (canvasRef.current && imageElement) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        canvas.width = imageElement.width;
-        canvas.height = imageElement.height;
-        ctx.drawImage(imageElement, 0, 0, imageElement.width, imageElement.height);
-      }
-    }
-  }
+  // function getData() {
+  //   if (canvasRef.current && imageElement) {
+  //     const canvas = canvasRef.current;
+  //     const ctx = canvas.getContext('2d');
+  //     if (ctx) {
+  //       canvas.width = imageElement.width;
+  //       canvas.height = imageElement.height;
+  //       ctx.drawImage(imageElement, 0, 0, imageElement.width, imageElement.height);
+  //     }
+  //   }
+  // }
 
   return (
     <Layout>
@@ -156,9 +143,8 @@ const Counter = () => {
               ptype={plantType}
               setViewReport={setViewReport}
               setResult={setResult}
-              image={canvasRef.current?.toDataURL('png', 1) || '/placeholder.png'}
+
               count={count.length || 0}
-              name='Mr. Gopal Jawle'
             />
             : null
         }
@@ -193,6 +179,10 @@ const Counter = () => {
             : null
         }
         {
+          predictions && imageElement &&
+          <PreviewPredictions type={plantType} onClose={() => { setPredictions(null); setImageElement(null); setImageString(null) }} id={image?.name} predictions={predictions} image={imageElement} setter={setPredictions} />
+        }
+        {/* {
 
           <div
             style={{
@@ -219,12 +209,10 @@ const Counter = () => {
             </button>
             <button
               onClick={async function () {
-
                 const name = new Date().toLocaleString('en-in', { dateStyle: 'medium' }).replace(/[ ,]/g, '-')
                 const res = await save_report({
                   ...farmer
                 }, count.length, `${plantType}-${name}`)
-
                 toast(res.message, { type: 'success' });
                 setViewReport(!viewReport)
               }}
@@ -241,8 +229,7 @@ const Counter = () => {
               </canvas>
             </div>
           </div>
-
-        }
+        } */}
 
         <main
           className='w-10/12  max-w-[600px] bg-gray-900 border border-slate-700 rounded-lg shadow-2xl p-8'
@@ -275,7 +262,7 @@ const Counter = () => {
                   </p>
                 </span>
                 <button
-                  onClick={() => setImageString(null)}
+                  onClick={() => { setImageString(null); setLoading(false) }}
                   className='bg-red-600 text-white rounded-full px-5 py-2 '
                 >
                   Reset
@@ -284,8 +271,6 @@ const Counter = () => {
             )
               : null
           }
-
-
 
           <div
             className='flex flex-col border rounded-lg border-dashed p-4 justify-center'
@@ -312,7 +297,11 @@ const Counter = () => {
                     >
                       Add label :
                     </p>
-                    <input type="text" placeholder='eg. cotton' className='bg-transparent py-2 rounded-full mr-4 outline-none ring-0 border text-white font-medium px-4 ' value={plantType} onChange={e => setplantType(e.target.value)} />
+                    <select className='bg-transparent py-2 rounded-full mr-4 outline-none ring-0 border text-white font-medium px-4 ' value={plantType} onChange={e => setplantType(e.target.value)} >
+                      <option className='bg-slate-900' value="">--Select plant--</option>
+                      <option className='bg-slate-900' value="Tobacco plant">Tobacco plant</option>
+                      <option className='bg-slate-900' value="cotton plant">cotton plant</option>
+                    </select>
                     <button
                       onClick={handleCountPlants}
                       disabled={loading}
@@ -356,6 +345,6 @@ const Counter = () => {
       </section>
     </Layout >
   )
-}
 
+}
 export default Counter

@@ -1,9 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import { connect } from "mongoose";
+import expressSession from "express-session";
 import FarmerRouter from "./route/farmer.route.js";
 import ReportRouter from "./route/report.route.js";
-import mongoose from "mongoose";
+import AdminRouter from "./route/admin.route.js";
+dotenv.config();
 
 const app = express();
 app.use(
@@ -19,12 +22,13 @@ app.use(
   })
 );
 app.use(express.urlencoded({ extended: false }));
-app.use("/api", FarmerRouter);
+app.use("/api/farmer", FarmerRouter);
 app.use("/api/report", ReportRouter);
+app.use("/api/admin", AdminRouter);
 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 1234;
 
 const api = `https://detect.roboflow.com/${process.env.MODEL_AND_VERSION}?api_key=${process.env.API_KEY}`;
 app.post("/api/v1/count", async (req, res) => {
@@ -44,8 +48,7 @@ app.post("/api/v1/count", async (req, res) => {
   });
 });
 
-mongoose
-  .connect(process.env.MONGO_URI)
+connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected.");
     app.listen(port, () => {

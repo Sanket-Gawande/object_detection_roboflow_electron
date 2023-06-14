@@ -8,14 +8,16 @@ const farmerSchema = new Schema(
     survey_no: String,
     area: Number,
     phone: String,
-    reports_generared: [
+    verified: { type: Boolean, default: false },
+    reports_generated: [
       {
+        count: { type: Number, required: true },
+        label: { type: String, required: true },
         date: { type: Date, default: Date.now() },
-        file: String,
       },
     ],
   },
   { timestamps: String }
 );
 
-export default  model("farmer", farmerSchema);
+export default model("farmer", farmerSchema);

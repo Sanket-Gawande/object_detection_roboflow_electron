@@ -31,3 +31,9 @@ yarn.lock
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/server/.env
+/client/.env
+.env
+**/**.env
+/server/__pycache__
+__pycache__
