@@ -30,7 +30,7 @@ def detect_objects():
             error_message = 'Invalid file format. Only JPG and JPEG files are allowed.'
             return jsonify({
                 'status': False,
-                'message' : error_message,
+                'message': error_message,
                 'data': {
                     'predictions': []
                 }

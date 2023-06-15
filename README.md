@@ -14,7 +14,7 @@
 - Clone the repository, Contails both client and server
 
 ```bash
-git clone  git@github.com:Sanket-Gawande/object_detection_roboflow_electron.git
+git clone git@github.com:Sanket-Gawande/object_detection_roboflow_electron.git
 ```
 
 ### Client
@@ -79,6 +79,7 @@ npm run dev
 - [Python](https://www.python.org) Requierd for flask
 
 ## Steps to train the model
+
 - Collect the images (Cotton and Tobacco for this project)
 - Upload the images to [Roboflow](https://roboflow.com) for annotation thing
 - Select the model (YOLOv8)
@@ -100,7 +101,19 @@ npm run dev
 - Also farmer can save the report
 - Farmer can view or delete the saved reports in the profile
 
-## Login Sign-up flow
+### Contributers
+
+<!-- contributers -->
+
+- [Gopal Jawle](https://github.com/Akshad16)
+- [Sanket Gawande](https://github.com/sanket-gawande)
+- [Akshad Malegaonkar](https://github.com/Akshad16)
+- [Jay Wankhade](https://github.com/jay-wankhade)
+
+</hr>
+
+### Login Sign-up flow
+<hr/>
 
 ### Sign-up
 
@@ -118,44 +131,3 @@ npm run dev
 
 - Profile page, change details, updates profile
 
-### farmer api
-
-- /farmer
-
-  - @post --> creates farmer
-  - @body -->
-
-    ```
-    {
-      payload {
-         "name",
-          "email",
-          "password",
-          "survey_no",
-          "area",
-          "phone"
-      }
-    }
-
-    ```
-
-  - @get --> get all farmers
-  - /farmer_id
-    - @get --> get farmer by id
-  - /delete/farmer_id -->
-    - @post delete farmer profile
-
-/report
-
-- @post --> create and saves report in user's profile
-- @body
-  ```
-  {
-    count,
-    label,
-    farmer_id
-  }
-  ```
-- /farmer_id
-  - @get --> return all reports for a specific farmer
-  - @delete --> delete specific report from user's profile(databse)
