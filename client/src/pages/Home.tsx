@@ -36,17 +36,17 @@ const Home = () => {
           </section>
         </main>
         <section
-          className='w-full p-12 relative text-white'
+          className='w-full p-12 text-2xl relative text-white'
         >
           <h4
             className='text-2xl  font-semibold'
           >
             How it works.
           </h4>
-          <span
+          {/* <span
             className='absolute inline-block w-[2px] h-[50%] mt-12 left-[7.5rem] bg-white/90 top-24'
-          />
-          <div
+          /> */}
+          {/* <div
             className='p-12'
           >
 
@@ -81,7 +81,56 @@ const Home = () => {
               )
             }
 
-          </div>
+          </div> */}
+
+          <main
+            className='tracking-wide pt-12 leading-10'
+          >
+            <h4
+              className='text-lg border-b border-current font-semibold text-yellow-500 w-max'
+            >
+              Application Workflow
+            </h4>
+            <p
+              className='my-4'
+            >
+              Our application follows a straightforward workflow to deliver accurate plant classification and counting results. The steps include image preprocessing, object detection using YOLO v8, and plant counting based on the detected objects. Each step is meticulously designed to ensure optimal performance and accurate results.
+            </p>
+
+          </main>
+          <main
+            className='tracking-wide pt-12 leading-10'
+          >
+            <h4
+              className='text-lg border-b border-current font-semibold text-yellow-500 w-max'
+            >
+              Key Features:
+            </h4>
+            <p
+              className='my-4'
+            >
+              Our application offers a range of key features that make plant classification and counting effortless:
+
+            </p>
+            <ul
+              className=' space-y-2 pt-4 list-disc list-inside'
+            >
+              <li>
+                Plant Classification: With the power of YOLO v8, our system can accurately identify and classify different plant species in images or videos
+              </li>
+              <li>
+                Plant Counting: Our algorithm can efficiently count the number of plants in an image or video, providing valuable insights for various fields such as agriculture, ecology, and conservation.
+              </li>
+              <li>
+                User-Friendly Interface: We have developed an intuitive user interface that allows users to easily upload images or videos, view classification results, and generate detailed reports.
+              </li>
+              <li>
+                Report Generation: Users can conveniently generate comprehensive reports that include classified plant information and accurate plant counts.
+
+              </li>
+
+            </ul>
+          </main>
         </section>
       </div>
 

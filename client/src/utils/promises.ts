@@ -9,7 +9,7 @@ export default {
       body: formdata,
     });
     const res = await req.json();
-    return res as { status: string; data: { predictions: Prediction[] } };
+    return res as { status: string; data: { predictions: Prediction[] }, message : 'string' };
   },
   NODE: async (imageString: string | any) => {
     const req = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/count`, {
@@ -22,6 +22,6 @@ export default {
       },
     });
     const res = await req.json();
-    return res as { status: string; data: { predictions: Prediction[] } };
+    return res as { status: string; data: { predictions: Prediction[] }, message? : 'string' };
   },
 };

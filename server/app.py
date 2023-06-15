@@ -10,7 +10,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-model = YOLO('model.pt')
+model = YOLO('best.pt')
 
 
 def get_timestamp_string():
@@ -25,13 +25,23 @@ def detect_objects():
     else:
 
         image_data = request.files['image'].read()
+        image = request.files['image']
+        if image.filename.split('.')[-1].lower() not in ['jpg', 'jpeg']:
+            error_message = 'Invalid file format. Only JPG and JPEG files are allowed.'
+            return jsonify({
+                'status': False,
+                'message' : error_message,
+                'data': {
+                    'predictions': []
+                }
+            }), 400
         image = Image.open(io.BytesIO(image_data))
 
         # Save the image file
         timestamp_string = get_timestamp_string()
         image_path = timestamp_string + '_image.jpg'
         image.save(image_path)
-        
+
         results = model.predict(image_path)
         results = results[0]
         response = []
@@ -54,6 +64,11 @@ def detect_objects():
                     'predictions': response
                 }
             }
+        if os.path.exists(image_path):
+            os.remove(image_path)
+            print('Image deleted successfully')
+        else:
+            print('Image not found')
         return jsonify(data), 200
 
 

@@ -85,7 +85,15 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
 
           {
             farmer?._id && farmer?.role === 'admin'
-              ? <Link to={'/admin/farmer/all'}>View farmers</Link>
+              ?
+              <>
+                <Link to={'/admin/farmer/all'}>View farmers</Link>
+                <button
+                  onClick={handle_logout}
+                  className='bg-red-500 text-white px-4 py-2  rounded-md'>
+                  Log-out
+                </button>
+              </>
               : null
           }
 

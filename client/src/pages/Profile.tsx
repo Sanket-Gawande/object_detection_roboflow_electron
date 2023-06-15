@@ -8,6 +8,7 @@ import { AiFillInfoCircle, AiOutlineInfo } from 'react-icons/ai';
 import { clipboard } from 'electron';
 
 export const Profile = () => {
+  
   const { farmer, setFarmer } = useContext(farmerContext);
   const [loading, setLoading] = useState(false)
   const [reports, setReport] = useState<{ count: number, label: string, date: any, _id: string, createdAt: any }[] | null>(null)
