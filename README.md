@@ -8,6 +8,7 @@
 - [Node.js](https://nodejs.org)
 - [Express.js](https://expressjs.com)
 - [mongodb](https://www.mongodb.com)
+- [Python](https://www.python.org/)
 
 ## Getting started
 
